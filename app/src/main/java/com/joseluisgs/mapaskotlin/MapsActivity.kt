@@ -144,7 +144,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 MarkerOptions() // Posición
                     .position(point) // Título
                     .title("Marcador Touch") // Subtitulo
-                    .snippet("El Que tú has puesto") // Color o tipo d icono
+                    .snippet("El que tú has puesto") // Color o tipo d icono
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
             )
             mMap.moveCamera(CameraUpdateFactory.newLatLng(point))
@@ -206,7 +206,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         )
 
         // Añadimos el ayuntamiento
-        // Añadimos un marcador en la estación
         val ayto = LatLng(38.6866069, -4.1110002)
         mMap.addMarker(
             MarkerOptions() // Posición
@@ -214,6 +213,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 .title("Ayuntamiento") // Subtitulo
                 .snippet("Ayuntamiento de Puertollano") // Color o tipo d icono
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) //.icon(BitmapDescriptorFactory.fromResource(R.drawable.ayuntamiento))
+        )
+        val instituto = LatLng(38.693300, -4.108546)
+        mMap.addMarker(
+            MarkerOptions() // Posición
+                .position(instituto) // Título
+                .title("CIFP Virgen de Gracia") // Subtitulo
+                .snippet("Hola 2º DAM ¡Localizados! :)") // Color o tipo d icono
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            //.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_instituto))
         )
     }
 
