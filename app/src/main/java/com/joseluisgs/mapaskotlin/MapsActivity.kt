@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -227,8 +226,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 
     override fun onMarkerClick(marker: Marker?): Boolean {
-        val titulo = marker!!.title
-        when (titulo) {
+        when (marker!!.title) {
             "Ayuntamiento" -> Toast.makeText(
                 this, marker.title.toString() +
                         " Mal sitio para ir.",
@@ -257,24 +255,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             if (permisos) {
                 // Lo lanzamos como tarea concurrente
                 val local: Task<Location> = mPosicion!!.lastLocation
-                local.addOnCompleteListener(this, object : OnCompleteListener<Location?> {
-                    override fun onComplete(task: Task<Location?>) {
-                        if (task.isSuccessful) {
-                            // Actualizamos la última posición conocida
-                            miUltimaLocalizacion = task.result
-                            posActual = LatLng(
-                                miUltimaLocalizacion!!.latitude,
-                                miUltimaLocalizacion!!.longitude
-                            )
-                            // Añadimos un marcador especial para poder operar con esto
-                            marcadorPosicionActual()
-                            informarPosocion()
-                        } else {
-                            Log.d("GPS", "No se encuetra la última posición.")
-                            Log.e("GPS", "Exception: %s", task.exception)
-                        }
+                local.addOnCompleteListener(
+                    this
+                ) { task ->
+                    if (task.isSuccessful) {
+                        // Actualizamos la última posición conocida
+                        miUltimaLocalizacion = task.result
+                        posActual = LatLng(
+                            miUltimaLocalizacion!!.latitude,
+                            miUltimaLocalizacion!!.longitude
+                        )
+                        // Añadimos un marcador especial para poder operar con esto
+                        marcadorPosicionActual()
+                        informarPosocion()
+                    } else {
+                        Log.d("GPS", "No se encuetra la última posición.")
+                        Log.e("GPS", "Exception: %s", task.exception)
                     }
-                })
+                }
             }
         } catch (e: SecurityException) {
             Log.e("Exception: %s", e.message.toString())
@@ -304,17 +302,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         )
     }
 
-    private fun informarPosocion() {
-        Toast.makeText(
-            this,
-            """Ultima posición Conocida:
-                     - Latitid: ${miUltimaLocalizacion!!.latitude}
-                    - Logitud: ${miUltimaLocalizacion!!.longitude}
-                    - Altura: ${miUltimaLocalizacion!!.altitude}
-                    - Precisón: ${miUltimaLocalizacion!!.accuracy}""",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
+    private fun informarPosocion() = Toast.makeText(
+        this,
+        """Ultima posición Conocida:
+                 - Latitid: ${miUltimaLocalizacion!!.latitude}
+                - Logitud: ${miUltimaLocalizacion!!.longitude}
+                - Altura: ${miUltimaLocalizacion!!.altitude}
+                - Precisón: ${miUltimaLocalizacion!!.accuracy}""",
+        Toast.LENGTH_SHORT
+    ).show()
 
     // Hilo con un reloj interno
     // Te acuerdas de los problemas de PSP con un Thread.Sleep()
